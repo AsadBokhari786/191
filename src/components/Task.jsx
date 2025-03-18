@@ -1,20 +1,42 @@
-import { useDrag } from 'react-dnd';
+import { useDrag } from "react-dnd";
+import TaskForm from "./TaskForm";
 
-const Task = ({ id, title, description, isComplete, category, onEdit, onDelete, onToggleComplete }) => {
+const Task = ({
+  id,
+  title,
+  description,
+  isComplete,
+  category,
+  onEdit,
+  onDelete,
+  onToggleComplete,
+  isEditing,
+  onUpdateTask,
+}) => {
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'TASK',
-    item: { id, category },
+    type: "TASK",
+    item: { id, title, description, category, isComplete },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   }));
 
+  if (isEditing) {
+    return (
+      <TaskForm
+        task={{ id, title, description, category }}
+        onSubmit={onUpdateTask}
+        onCancel={() => onEdit(null)}
+      />
+    );
+  }
+
   return (
     <div
       ref={drag}
       className={`p-4 mb-2 bg-white rounded-lg shadow ${
-        isDragging ? 'opacity-50' : ''
-      } ${isComplete ? 'bg-gray-50' : ''}`}
+        isDragging ? "opacity-50" : ""
+      } ${isComplete ? "bg-gray-50" : ""}`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
@@ -24,7 +46,9 @@ const Task = ({ id, title, description, isComplete, category, onEdit, onDelete, 
             onChange={() => onToggleComplete(id)}
             className="h-4 w-4 text-blue-600"
           />
-          <h3 className={`font-medium ${isComplete ? 'line-through text-gray-500' : ''}`}>
+          <h3
+            className={`font-medium ${isComplete ? "line-through text-gray-500" : ""}`}
+          >
             {title}
           </h3>
         </div>
@@ -44,7 +68,9 @@ const Task = ({ id, title, description, isComplete, category, onEdit, onDelete, 
         </div>
       </div>
       {description && (
-        <p className={`mt-2 text-sm ${isComplete ? 'text-gray-500' : 'text-gray-600'}`}>
+        <p
+          className={`mt-2 text-sm ${isComplete ? "text-gray-500" : "text-gray-600"}`}
+        >
           {description}
         </p>
       )}
