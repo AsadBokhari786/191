@@ -3,12 +3,13 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Task from './Task';
 
-// Wrap component with DND provider for testing
-const TaskWrapper = (props) => (
-  <DndProvider backend={HTML5Backend}>
-    <Task {...props} />
-  </DndProvider>
-);
+const renderWithDnd = (ui) => {
+  return render(
+    <DndProvider backend={HTML5Backend}>
+      {ui}
+    </DndProvider>
+  );
+};
 
 describe('Task Component', () => {
   const mockTask = {
@@ -31,14 +32,24 @@ describe('Task Component', () => {
   });
 
   test('renders task with title and description', () => {
-    render(<TaskWrapper {...mockTask} {...mockHandlers} />);
+    renderWithDnd(
+      <Task
+        {...mockTask}
+        {...mockHandlers}
+      />
+    );
     
     expect(screen.getByText('Test Task')).toBeInTheDocument();
     expect(screen.getByText('Test Description')).toBeInTheDocument();
   });
 
   test('toggles task completion status', () => {
-    render(<TaskWrapper {...mockTask} {...mockHandlers} />);
+    renderWithDnd(
+      <Task
+        {...mockTask}
+        {...mockHandlers}
+      />
+    );
     
     const checkbox = screen.getByRole('checkbox');
     fireEvent.click(checkbox);
@@ -47,7 +58,12 @@ describe('Task Component', () => {
   });
 
   test('handles edit button click', () => {
-    render(<TaskWrapper {...mockTask} {...mockHandlers} />);
+    renderWithDnd(
+      <Task
+        {...mockTask}
+        {...mockHandlers}
+      />
+    );
     
     const editButton = screen.getByText('Edit');
     fireEvent.click(editButton);
@@ -56,7 +72,12 @@ describe('Task Component', () => {
   });
 
   test('handles delete button click', () => {
-    render(<TaskWrapper {...mockTask} {...mockHandlers} />);
+    renderWithDnd(
+      <Task
+        {...mockTask}
+        {...mockHandlers}
+      />
+    );
     
     const deleteButton = screen.getByText('Delete');
     fireEvent.click(deleteButton);
@@ -65,8 +86,8 @@ describe('Task Component', () => {
   });
 
   test('displays edit form when isEditing is true', () => {
-    render(
-      <TaskWrapper
+    renderWithDnd(
+      <Task
         {...mockTask}
         {...mockHandlers}
         isEditing={true}
@@ -78,8 +99,8 @@ describe('Task Component', () => {
   });
 
   test('applies completed styling when task is complete', () => {
-    render(
-      <TaskWrapper
+    renderWithDnd(
+      <Task
         {...mockTask}
         {...mockHandlers}
         isComplete={true}
@@ -91,7 +112,12 @@ describe('Task Component', () => {
   });
 
   test('task is draggable', () => {
-    render(<TaskWrapper {...mockTask} {...mockHandlers} />);
+    renderWithDnd(
+      <Task
+        {...mockTask}
+        {...mockHandlers}
+      />
+    );
     
     const taskElement = screen.getByText('Test Task').closest('div[draggable]');
     expect(taskElement).toHaveAttribute('draggable');
